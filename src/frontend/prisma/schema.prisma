@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Marker {
+  id         String      @id @default(cuid())
+  name       String      @db.VarChar(255)
+  userId     String?     // Future: user authentication
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  
+  subMarkers SubMarker[]
+  
+  @@index([userId])
+  @@map("markers")
+}
+
+model SubMarker {
+  id        String   @id @default(cuid())
+  name      String   @db.VarChar(255)
+  markerId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  marker Marker @relation(fields: [markerId], references: [id], onDelete: Cascade)
+  notes  Note[]
+  
+  @@index([markerId])
+  @@map("sub_markers")
+}
+
+model Note {
+  id          String   @id @default(cuid())
+  title       String   @db.VarChar(255)
+  content     String   @db.Text
+  subMarkerId String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  subMarker SubMarker @relation(fields: [subMarkerId], references: [id], onDelete: Cascade)
+  
+  @@index([subMarkerId])
+  @@index([createdAt])
+  @@map("notes")
+}

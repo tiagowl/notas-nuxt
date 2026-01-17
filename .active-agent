@@ -1,0 +1,7 @@
+﻿{
+    "template_path":  "D:\\Tiago\\Área de Trabalho\\Projetos\\notas-nuxt\\scripts\\..\\templates\\product-owner-prompt.md",
+    "agent":  "product-owner",
+    "config_path":  "D:\\Tiago\\Área de Trabalho\\Projetos\\notas-nuxt\\scripts\\..\\agents\\product-owner\\config.json",
+    "name":  "Product Owner",
+    "activated_at":  "2026-01-17 16:23:35"
+}

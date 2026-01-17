@@ -1,0 +1,122 @@
+<template>
+  <div
+    v-if="isOpen"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+    @click.self="$emit('close')"
+  >
+    <div class="bg-background border rounded-lg p-6 w-full max-w-md mx-4">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-semibold">
+          {{ isGenerating ? 'Gerando Conteúdo...' : 'Gerar Conteúdo com IA' }}
+        </h2>
+        <button
+          v-if="!isGenerating"
+          @click="$emit('close')"
+          class="p-2 hover:bg-accent rounded-md"
+          aria-label="Fechar"
+        >
+          ✕
+        </button>
+      </div>
+      
+      <div v-if="isGenerating" class="text-center py-8">
+        <div class="animate-spin text-4xl mb-4">🔄</div>
+        <p class="text-muted-foreground">
+          Gerando seu conteúdo...
+        </p>
+        <p class="text-sm text-muted-foreground mt-2">
+          Isso pode levar alguns segundos.
+        </p>
+      </div>
+      
+      <div v-else-if="error" class="space-y-4">
+        <div class="bg-destructive/10 border border-destructive rounded-lg p-4">
+          <p class="text-destructive font-medium mb-2">❌ Erro ao Gerar Conteúdo</p>
+          <p class="text-sm text-muted-foreground">{{ error }}</p>
+        </div>
+        <div class="flex justify-end gap-2">
+          <button
+            @click="$emit('close')"
+            class="px-4 py-2 border rounded-md hover:bg-accent transition-colors"
+          >
+            Fechar
+          </button>
+          <button
+            @click="$emit('retry')"
+            class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:opacity-90 transition-opacity"
+          >
+            Tentar Novamente
+          </button>
+        </div>
+      </div>
+      
+      <div v-else class="space-y-4">
+        <div>
+          <label for="description" class="block text-sm font-medium mb-2">
+            Descreva o conteúdo que você deseja gerar:
+          </label>
+          <textarea
+            id="description"
+            v-model="description"
+            class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary min-h-[100px]"
+            placeholder="Exemplo: Resumo sobre derivadas parciais e suas aplicações em problemas de otimização..."
+            maxlength="500"
+          />
+          <p class="text-xs text-muted-foreground mt-1">
+            Mínimo 10 caracteres ({{ description.length }}/500)
+          </p>
+        </div>
+        <div class="flex justify-end gap-2">
+          <button
+            @click="$emit('close')"
+            class="px-4 py-2 border rounded-md hover:bg-accent transition-colors"
+          >
+            Cancelar
+          </button>
+          <button
+            @click="handleGenerate"
+            :disabled="!isValid"
+            class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Gerar Conteúdo
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+interface Props {
+  isOpen: boolean
+  isGenerating?: boolean
+  error?: string | null
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  isGenerating: false,
+  error: null
+})
+
+const emit = defineEmits<{
+  close: []
+  generate: [description: string]
+  retry: []
+}>()
+
+const description = ref('')
+
+const isValid = computed(() => description.value.trim().length >= 10 && description.value.length <= 500)
+
+const handleGenerate = () => {
+  if (isValid.value) {
+    emit('generate', description.value.trim())
+  }
+}
+
+watch(() => props.isOpen, (open) => {
+  if (!open) {
+    description.value = ''
+  }
+})
+</script>

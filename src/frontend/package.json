@@ -1,0 +1,32 @@
+{
+  "name": "notas-nuxt",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@nuxtjs/tailwindcss": "^6.12.1",
+    "@pinia/nuxt": "^0.5.1",
+    "@prisma/client": "^5.19.1",
+    "@tiptap/vue-3": "^2.5.0",
+    "@tiptap/starter-kit": "^2.5.0",
+    "dompurify": "^3.1.8",
+    "nuxt": "^4.0.0",
+    "pinia": "^2.2.6",
+    "vue": "^3.5.10",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "^1.4.6",
+    "@types/dompurify": "^3.0.5",
+    "prisma": "^5.19.1",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.1"
+  }
+}

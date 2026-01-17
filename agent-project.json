@@ -1,0 +1,21 @@
+﻿{
+    "project":  {
+                    "created":  "2026-01-17 16:23:04",
+                    "agents":  [
+                                   "product-owner",
+                                   "architect",
+                                   "frontend-dev",
+                                   "backend-dev",
+                                   "devops",
+                                   "tester",
+                                   "ux"
+                               ],
+                    "name":  "notas-nuxt",
+                    "workflows":  [
+                                      "complete-development",
+                                      "feature-development",
+                                      "bug-fixing",
+                                      "code-review"
+                                  ]
+                }
+}

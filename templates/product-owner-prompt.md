@@ -45,7 +45,18 @@ Como Product Owner, preciso que você:
 ### Para Análise de Requisitos
 ```
 Analise os seguintes requisitos e crie user stories detalhadas:
-[Inserir requisitos aqui]
+- Sistema de gerenciamento de notas;
+- Ao começar a usar o sistema, o usuário cria um marcador, em seguida um sub marcador que pretence ao marcador criado em seguida notas, que pertence ao sub marcador;
+- cada nota deve ter um título, conteúdo e data de criação;
+- o conteúdo da nota deve ser criado com rich text;
+- o usuário digita sobre o que ele quer na nota num textarea, e clica em gerar. Ao clicar em gerar, acionar uma api de ia para gerar o conteúdo. Após gerar o conteúdo, o usuário clica em salvar a nota;
+- o sistema deve ser feito com o framework nuxt v4 e seu ecossistema;
+- para estilização usar os componentes do shadcn ui vue e seu design system;
+- para interagir com o banco de dados usar a api routes do nuxt com prisma orm;
+- todas as notas podem ser editadas e excluidas;
+- ajustar o layout para visualização mobile e desktop;
+- usar a api de ia hugging face;
+- o banco de dados sera o neon;
 
 Foque em:
 - Identificar personas
