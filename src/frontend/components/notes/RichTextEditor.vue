@@ -94,10 +94,18 @@ const editor = useEditor({
 })
 
 watch(() => props.modelValue, (newValue) => {
-  if (editor.value && editor.value.getHTML() !== newValue) {
-    editor.value.commands.setContent(newValue)
+  if (editor.value && newValue !== undefined && newValue !== null) {
+    const currentHtml = editor.value.getHTML()
+    const newValueStr = newValue || '<p></p>'
+    
+    // Sempre atualizar se o valor mudou (comparação estrita)
+    // O false no setContent evita trigger do onUpdate durante a atualização
+    if (currentHtml !== newValueStr) {
+      // Usar setContent com emitUpdate: false para evitar loops
+      editor.value.commands.setContent(newValueStr, false, { emitUpdate: false })
+    }
   }
-})
+}, { immediate: true, deep: false, flush: 'post' })
 
 onBeforeUnmount(() => {
   editor.value?.destroy()

@@ -58,12 +58,12 @@
           <textarea
             id="description"
             v-model="description"
-            class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary min-h-[100px]"
-            placeholder="Exemplo: Resumo sobre derivadas parciais e suas aplicações em problemas de otimização..."
+            class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary min-h-[120px]"
+            placeholder="Seja específico! Exemplo:&#10;&#10;Escreva um resumo sobre derivadas parciais explicando: o que são, como calcular e suas aplicações práticas em problemas de otimização. Use linguagem acessível para estudantes universitários.&#10;&#10;Dicas:&#10;- Seja claro sobre o tema e público-alvo&#10;- Mencione o formato desejado (resumo, explicação, lista, etc.)&#10;- Inclua exemplos práticos quando relevante"
             maxlength="500"
           />
           <p class="text-xs text-muted-foreground mt-1">
-            Mínimo 10 caracteres ({{ description.length }}/500)
+            Mínimo 10 caracteres ({{ description.length }}/500) • Quanto mais específico, melhor o resultado
           </p>
         </div>
         <div class="flex justify-end gap-2">

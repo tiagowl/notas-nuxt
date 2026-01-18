@@ -16,8 +16,41 @@ export const useAI = () => {
       })
       
       return response.content
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro ao gerar conteúdo'
+    } catch (err: unknown) {
+      let errorMessage = 'Erro ao gerar conteúdo'
+      
+      if (err && typeof err === 'object') {
+        const e = err as { 
+          data?: { detail?: string | object }; 
+          statusMessage?: string; 
+          message?: string;
+          statusCode?: number;
+        }
+        
+        // Extrair mensagem de diferentes locais possíveis
+        if (e.statusMessage) {
+          errorMessage = e.statusMessage
+        } else if (e.message) {
+          errorMessage = e.message
+        } else if (e.data) {
+          // Se data.detail for objeto, converter para string
+          if (e.data.detail) {
+            errorMessage = typeof e.data.detail === 'string' 
+              ? e.data.detail 
+              : JSON.stringify(e.data.detail)
+          }
+        }
+      } else if (err instanceof Error) {
+        errorMessage = err.message
+      } else if (typeof err === 'string') {
+        errorMessage = err
+      }
+      
+      // Garantir que nunca seja [object Object]
+      if (errorMessage === '[object Object]' || !errorMessage || errorMessage.trim() === '') {
+        errorMessage = 'Erro desconhecido ao gerar conteúdo. Verifique a configuração da API.'
+      }
+      
       error.value = errorMessage
       throw err
     } finally {

@@ -68,6 +68,20 @@ watch(content, (newContent) => {
   emit('update:content', newContent)
 })
 
+watch(() => props.initialTitle, (newTitle) => {
+  if (title.value !== newTitle) {
+    title.value = newTitle
+  }
+})
+
+watch(() => props.initialContent, (newContent) => {
+  // Sempre atualizar se o valor mudou
+  // Forçar atualização mesmo se parecer igual para garantir sincronização
+  if (content.value !== (newContent || '')) {
+    content.value = newContent || ''
+  }
+}, { immediate: true, deep: false })
+
 defineExpose({
   validate: () => {
     if (!title.value.trim()) {

@@ -2,6 +2,11 @@ import { Prisma } from '@prisma/client'
 import { z } from 'zod'
 
 export const handleApiError = (error: unknown) => {
+  // Re-throw H3/Nitro createError para preservar status e mensagem
+  if (error && typeof error === 'object' && 'statusCode' in error && typeof (error as { statusCode?: number }).statusCode === 'number') {
+    throw error
+  }
+
   // Zod validation error
   if (error instanceof z.ZodError) {
     throw createError({

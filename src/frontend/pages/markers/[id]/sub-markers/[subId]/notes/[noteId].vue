@@ -42,8 +42,8 @@
 
         <NoteForm
           ref="noteFormRef"
-          :initial-title="note?.title || ''"
-          :initial-content="note?.content || ''"
+          :initial-title="editingTitle"
+          :initial-content="editingContent"
           @update:title="editingTitle = $event"
           @update:content="editingContent = $event"
           @generate-ai="showAIModal = true"
@@ -91,7 +91,7 @@
       :error="aiError"
       @close="closeAIModal"
       @generate="handleAIGenerate"
-      @retry="handleAIGenerate"
+      @retry="handleAIRetry"
     />
 
     <!-- Delete Confirmation -->
@@ -113,7 +113,7 @@ import type { Note } from '~/types'
 import { useNotes } from '~/composables/useNotes'
 import { useAI } from '~/composables/useAI'
 import { useUIStore } from '~/stores/ui'
-import { formatDate } from '~/utils/format'
+import { formatDate, formatTextToHtml } from '~/utils/format'
 import { sanitizeRichText } from '~/utils/sanitize'
 
 const route = useRoute()
@@ -136,6 +136,7 @@ const showDeleteConfirm = ref(false)
 const isSaving = ref(false)
 const editingTitle = ref('')
 const editingContent = ref('')
+const lastAIDescription = ref<string>('')
 
 const sanitizedContent = computed(() => {
   if (!note.value) return ''
@@ -208,12 +209,45 @@ const handleSave = async () => {
 
 const handleAIGenerate = async (description: string) => {
   try {
+    lastAIDescription.value = description
     const content = await generateContent({ description })
-    editingContent.value = `<p>${content}</p>`
+    
+    // Verificar se o conteúdo foi gerado
+    if (!content || content.trim() === '') {
+      uiStore.showToast('Nenhum conteúdo foi gerado. Tente novamente com uma descrição mais específica.', 'warning')
+      return
+    }
+    
+    // Log para debug - verificar se o conteúdo completo está sendo recebido
+    console.log('Conteúdo recebido da IA:', content.length, 'caracteres')
+    
+    // Converte texto plano em HTML formatado para o rich text editor
+    const formattedContent = formatTextToHtml(content)
+    
+    // Log para debug - verificar se a formatação preservou todo o conteúdo
+    console.log('Conteúdo formatado:', formattedContent.length, 'caracteres')
+    
+    // Forçar atualização do conteúdo de forma mais robusta
+    // Primeiro limpar, depois definir o novo valor
+    editingContent.value = ''
+    await nextTick()
+    await nextTick() // Duplo nextTick para garantir que o Vue processou
+    editingContent.value = formattedContent
+    
+    // Aguardar mais um tick para garantir que o editor foi atualizado
+    await nextTick()
+    
     closeAIModal()
     uiStore.showToast('Conteúdo gerado com sucesso!', 'success')
   } catch (err) {
-    // Error handled by composable
+    // Error já está sendo exibido no modal via aiError do composable
+    console.error('Erro ao gerar conteúdo com IA:', err)
+  }
+}
+
+const handleAIRetry = () => {
+  if (lastAIDescription.value) {
+    handleAIGenerate(lastAIDescription.value)
   }
 }
 

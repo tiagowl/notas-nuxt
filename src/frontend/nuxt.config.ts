@@ -15,6 +15,11 @@ export default defineNuxtConfig({
   
   runtimeConfig: {
     huggingFaceApiKey: process.env.HUGGING_FACE_API_KEY || '',
+    // Para melhor qualidade em seguir instruções (estilo ChatGPT), recomenda-se:
+    // - 'meta-llama/Llama-3.1-8B-Instruct' (melhor para seguir comandos específicos)
+    // - 'mistralai/Mistral-7B-Instruct-v0.2' (bom para instruções gerais)
+    // Configure via HUGGING_FACE_MODEL no .env
+    huggingFaceModel: process.env.HUGGING_FACE_MODEL || 'mistralai/Mistral-7B-Instruct-v0.2',
     public: {
       appUrl: process.env.NUXT_PUBLIC_APP_URL || 'http://localhost:3000'
     }
