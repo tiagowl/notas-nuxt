@@ -32,7 +32,20 @@
       <div v-else-if="error" class="space-y-4">
         <div class="bg-destructive/10 border border-destructive rounded-lg p-4">
           <p class="text-destructive font-medium mb-2">❌ Erro ao Gerar Conteúdo</p>
-          <p class="text-sm text-muted-foreground">{{ error }}</p>
+          <p class="text-sm text-muted-foreground mb-3">{{ error }}</p>
+          
+          <!-- Instruções de troubleshooting para erro 401/403 -->
+          <div v-if="error.includes('autenticação') || error.includes('401') || error.includes('403')" class="mt-4 pt-4 border-t border-destructive/20">
+            <p class="text-sm font-medium text-destructive mb-2">Como resolver:</p>
+            <ol class="text-xs text-muted-foreground space-y-1 list-decimal list-inside">
+              <li>Verifique se o arquivo <code class="bg-background px-1 rounded">.env</code> existe na raiz do projeto</li>
+              <li>Confirme que <code class="bg-background px-1 rounded">HUGGING_FACE_API_KEY</code> está definido no .env</li>
+              <li>Verifique se o token começa com <code class="bg-background px-1 rounded">hf_</code></li>
+              <li>Acesse <a href="https://huggingface.co/settings/tokens" target="_blank" class="text-primary underline">https://huggingface.co/settings/tokens</a> e verifique as permissões do token</li>
+              <li>Certifique-se de que o token tem a permissão <strong>"Make calls to Inference Providers"</strong> habilitada</li>
+              <li>Se necessário, crie um novo token com as permissões corretas</li>
+            </ol>
+          </div>
         </div>
         <div class="flex justify-end gap-2">
           <button

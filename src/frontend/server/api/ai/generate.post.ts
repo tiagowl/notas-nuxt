@@ -162,10 +162,30 @@ Responda seguindo exatamente as instruções acima, formatado em Markdown.`
       }
       
       if (response.status === 401 || response.status === 403) {
+        let authErrorMessage = 'Erro de autenticação na API Hugging Face.'
+        
+        // Mensagens mais específicas baseadas no erro retornado
+        if (errorDetail.toLowerCase().includes('invalid') || errorDetail.toLowerCase().includes('unauthorized')) {
+          authErrorMessage = 'Token de API inválido ou expirado. Verifique se HUGGING_FACE_API_KEY no arquivo .env está correto e se o token não expirou.'
+        } else if (errorDetail.toLowerCase().includes('permission') || errorDetail.toLowerCase().includes('forbidden')) {
+          authErrorMessage = 'Token de API sem permissões necessárias. Certifique-se de que o token tem a permissão "Make calls to Inference Providers" habilitada em https://huggingface.co/settings/tokens'
+        } else {
+          authErrorMessage = 'Erro de autenticação na API Hugging Face. Verifique se HUGGING_FACE_API_KEY está configurado corretamente no arquivo .env e se o token tem permissões de "Make calls to Inference Providers" em https://huggingface.co/settings/tokens'
+        }
+        
         throw createError({
           statusCode: response.status,
-          statusMessage: `Erro de autenticação na API Hugging Face. Verifique se HUGGING_FACE_API_KEY está configurado corretamente e se o token tem permissões de "Make calls to Inference Providers".`,
-          data: { detail: errorDetail }
+          statusMessage: `${authErrorMessage} Detalhes: ${errorDetail || 'Erro desconhecido'}`,
+          data: { 
+            detail: errorDetail,
+            troubleshooting: [
+              '1. Verifique se o arquivo .env existe na raiz do projeto',
+              '2. Confirme que HUGGING_FACE_API_KEY está definido no .env',
+              '3. Verifique se o token começa com "hf_"',
+              '4. Acesse https://huggingface.co/settings/tokens e verifique se o token tem a permissão "Make calls to Inference Providers"',
+              '5. Se necessário, crie um novo token com as permissões corretas'
+            ]
+          }
         })
       }
       
